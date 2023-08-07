@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django_filters',
     'django_rest_passwordreset',
     'drf_yasg',
+
+    'accounts',
     
 ]
 
@@ -101,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
     {
-        'NAME': 'auth_app.validators.LatinPasswordValidator',
+        'NAME': 'accounts.validators.LatinPasswordValidator',
     },
 ]
 
@@ -133,7 +135,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
 #        'rest_framework.authentication.SessionAuthentication',
 #        'rest_framework.authentication.BasicAuthentication',
-        'auth_app.authenticate.CustomAuthentication',
+        'accounts.authenticate.CustomAuthentication',
     ],
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -141,7 +143,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    'EXCEPTION_HANDLER': 'project.utils.custom_exception_handler',
+    'EXCEPTION_HANDLER': 'backend.utils.custom_exception_handler',
 }
 
 SIMPLE_JWT = {
@@ -203,7 +205,7 @@ EMAIL_USE_SSL = env('EMAIL_USE_SSL') == 'True'
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
-# AUTH_USER_MODEL = "user_app.User"
+AUTH_USER_MODEL = "accounts.User"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
