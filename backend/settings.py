@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django_filters',
     'django_rest_passwordreset',
     'drf_yasg',
+    'drf_spectacular',
 
     'accounts',
     'chatbot',
@@ -147,6 +148,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'EXCEPTION_HANDLER': 'backend.utils.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Chatbot API',
+    'DESCRIPTION': 'API for Chatbot',
+    'VERSION': '1.0.0',
+    'SCHEMA_PATH_PREFIX': r'/api/v1',
+
 }
 
 SIMPLE_JWT = {
