@@ -21,7 +21,8 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("accounts/", include("accounts.urls")),  
+    path("accounts/", include("accounts.urls")), 
+    path("chatbot/", include("chatbot.urls")), 
     path('api-auth/', include('rest_framework.urls')),
   
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

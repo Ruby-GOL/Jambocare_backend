@@ -3,9 +3,6 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
-from drf_yasg.views import get_schema_view  # new
-from drf_yasg import openapi  
-
 from .views import *
 
 router = DefaultRouter()
