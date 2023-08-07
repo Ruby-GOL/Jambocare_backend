@@ -1,0 +1,1019 @@
+openapi: 3.0.3
+info:
+  title: Chatbot API
+  version: 1.0.0
+  description: API for Chatbot
+paths:
+  /accounts/api/change-password/:
+    put:
+      operationId: accounts_api_change_password_update
+      description: |-
+        API view for changing user password.
+
+        This view handles PUT requests for changing the password of the authenticated user.
+        It validates the old password, validates the new password, updates the password,
+        and returns a success message in the response.
+
+        Permission:
+            IsAuthenticated: Only authenticated users can access this view.
+
+        Methods:
+            get_object(self, queryset=None): Retrieves the authenticated user object.
+            update(self, request, *args, **kwargs): Handles PUT requests for changing user password.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangePassword'
+          description: ''
+  /accounts/api/confirmation-email/confirm/:
+    post:
+      operationId: accounts_api_confirmation_email_confirm_create
+      description: |-
+        Handles POST requests for confirming user email.
+
+        This method validates the email confirmation token, updates the user's email confirmation
+        status, activates the user account, and returns a success message in the response.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable-length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Response: The HTTP response containing the success message.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ConfirmEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ConfirmEmail'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmEmail'
+          description: ''
+  /accounts/api/confirmation-email/send/:
+    post:
+      operationId: accounts_api_confirmation_email_send_create
+      description: |-
+        Handles POST requests for sending an email confirmation token.
+
+        This method retrieves the authenticated user, generates a token,
+        creates an email confirmation token instance, sends the confirmation email,
+        and returns a success message in the response.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing the success message.
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /accounts/api/logout/:
+    post:
+      operationId: accounts_api_logout_create
+      description: |-
+        Handles POST requests for user logout.
+
+        This method retrieves the refresh token from the request data,
+        blacklists the token, and returns a success message in the response.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable-length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Response: The HTTP response containing the success message or error details.
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /accounts/api/password-reset/:
+    post:
+      operationId: accounts_api_password_reset_create
+      description: |-
+        An Api View which provides a method to request a password reset token based on an e-mail address
+
+        Sends a signal reset_password_token_created when a reset token was created
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Email'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Email'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+          description: ''
+  /accounts/api/password-reset/confirm/:
+    post:
+      operationId: accounts_api_password_reset_confirm_create
+      description: An Api View which provides a method to reset a password based on
+        a unique token
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordToken'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordToken'
+          description: ''
+  /accounts/api/password-reset/validate_token/:
+    post:
+      operationId: accounts_api_password_reset_validate_token_create
+      description: An Api View which provides a method to verify that a token is valid
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetToken'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetToken'
+          description: ''
+  /accounts/api/profile/:
+    get:
+      operationId: accounts_api_profile_retrieve
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /accounts/api/profiles/:
+    get:
+      operationId: accounts_api_profiles_list
+      description: Get, Update user profile
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+          description: ''
+  /accounts/api/profiles/{id}/:
+    get:
+      operationId: accounts_api_profiles_retrieve
+      description: Get, Update user profile
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    patch:
+      operationId: accounts_api_profiles_partial_update
+      description: Get, Update user profile
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /accounts/api/register/:
+    post:
+      operationId: accounts_api_register_create
+      description: |-
+        Handles POST requests for user registration.
+
+        This method validates the user registration data using the serializer,
+        creates a new user, generates a token pair (refresh and access), creates
+        an email confirmation token, sends a confirmation email, and returns
+        the user data and token pair in the response.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable-length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Response: The HTTP response containing the user data and token pair or validation errors.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+  /accounts/api/token/:
+    post:
+      operationId: accounts_api_token_create
+      description: |-
+        Handles POST requests for user login.
+
+        This method validates the user's email and password using the serializer,
+        generates the token pair (refresh and access), sets the refresh token as a cookie,
+        adds the CSRF token to the response, and returns the token pair in the response data.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable-length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Response: The HTTP response containing the token pair or validation errors.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLogin'
+          description: ''
+  /accounts/api/token/refresh/:
+    post:
+      operationId: accounts_api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /accounts/api/user/:
+    get:
+      operationId: accounts_api_user_retrieve
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelfUser'
+          description: ''
+  /accounts/api/users/:
+    get:
+      operationId: accounts_api_users_list
+      description: Get, Update user information
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomUser'
+          description: ''
+  /accounts/api/users/{id}/:
+    get:
+      operationId: accounts_api_users_retrieve
+      description: Get, Update user information
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomUser'
+          description: ''
+    patch:
+      operationId: accounts_api_users_partial_update
+      description: Get, Update user information
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomUser'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomUser'
+          description: ''
+    delete:
+      operationId: accounts_api_users_destroy
+      description: Get, Update user information
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /chatbot/api/dialogues/:
+    get:
+      operationId: chatbot_api_dialogues_list
+      description: |-
+        ViewSet class for the Dialog model.
+
+        This ViewSet provides CRUD functionality for Dialog objects.
+
+        Attributes:
+            queryset (QuerySet): The queryset of Dialog objects.
+            serializer_class (Serializer): The serializer class for Dialog objects.
+            permission_classes (list): The list of permission classes.
+            http_method_names (list): The list of allowed HTTP methods.
+      tags:
+      - chatbot
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DialogModel'
+          description: ''
+    post:
+      operationId: chatbot_api_dialogues_create
+      description: |-
+        ViewSet class for the Dialog model.
+
+        This ViewSet provides CRUD functionality for Dialog objects.
+
+        Attributes:
+            queryset (QuerySet): The queryset of Dialog objects.
+            serializer_class (Serializer): The serializer class for Dialog objects.
+            permission_classes (list): The list of permission classes.
+            http_method_names (list): The list of allowed HTTP methods.
+      tags:
+      - chatbot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DialogModel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DialogModel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DialogModel'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogModel'
+          description: ''
+  /chatbot/api/dialogues/{id}/:
+    get:
+      operationId: chatbot_api_dialogues_retrieve
+      description: |-
+        ViewSet class for the Dialog model.
+
+        This ViewSet provides CRUD functionality for Dialog objects.
+
+        Attributes:
+            queryset (QuerySet): The queryset of Dialog objects.
+            serializer_class (Serializer): The serializer class for Dialog objects.
+            permission_classes (list): The list of permission classes.
+            http_method_names (list): The list of allowed HTTP methods.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dialog.
+        required: true
+      tags:
+      - chatbot
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogModel'
+          description: ''
+    delete:
+      operationId: chatbot_api_dialogues_destroy
+      description: |-
+        Destroy a Dialog object.
+
+        This method deletes the specified Dialog object and returns a success message.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing the success message.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dialog.
+        required: true
+      tags:
+      - chatbot
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /chatbot/api/messages/:
+    get:
+      operationId: chatbot_api_messages_list
+      description: |-
+        ViewSet class for the Message model.
+
+        This ViewSet provides CRUD functionality for Message objects.
+
+        Attributes:
+            queryset (QuerySet): The queryset of Message objects.
+            serializer_class (Serializer): The serializer class for Message objects.
+            filterset_class (FilterSet): The filterset class for Message objects.
+            permission_classes (list): The list of permission classes.
+            http_method_names (list): The list of allowed HTTP methods.
+      parameters:
+      - in: query
+        name: dialog_id
+        schema:
+          type: integer
+      tags:
+      - chatbot
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageModel'
+          description: ''
+    post:
+      operationId: chatbot_api_messages_create
+      description: |-
+        ViewSet class for the Message model.
+
+        This ViewSet provides CRUD functionality for Message objects.
+
+        Attributes:
+            queryset (QuerySet): The queryset of Message objects.
+            serializer_class (Serializer): The serializer class for Message objects.
+            filterset_class (FilterSet): The filterset class for Message objects.
+            permission_classes (list): The list of permission classes.
+            http_method_names (list): The list of allowed HTTP methods.
+      tags:
+      - chatbot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageModel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MessageModel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MessageModel'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageModel'
+          description: ''
+  /chatbot/api/messages/{id}/:
+    get:
+      operationId: chatbot_api_messages_retrieve
+      description: |-
+        ViewSet class for the Message model.
+
+        This ViewSet provides CRUD functionality for Message objects.
+
+        Attributes:
+            queryset (QuerySet): The queryset of Message objects.
+            serializer_class (Serializer): The serializer class for Message objects.
+            filterset_class (FilterSet): The filterset class for Message objects.
+            permission_classes (list): The list of permission classes.
+            http_method_names (list): The list of allowed HTTP methods.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this message.
+        required: true
+      tags:
+      - chatbot
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageModel'
+          description: ''
+    delete:
+      operationId: chatbot_api_messages_destroy
+      description: |-
+        Destroy a Message object.
+
+        This method deletes the specified Message object and returns a success message.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing the success message.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this message.
+        required: true
+      tags:
+      - chatbot
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    ChangePassword:
+      type: object
+      description: |-
+        Serializer class for the password change endpoint.
+
+        This serializer is used to validate the old and new passwords for a user.
+
+        Fields:
+            model (User): The User model used for the password change.
+            old_password (CharField): The old password (required).
+            new_password (CharField): The new password (required).
+      properties:
+        old_password:
+          type: string
+        new_password:
+          type: string
+      required:
+      - new_password
+      - old_password
+    ConfirmEmail:
+      type: object
+      description: |-
+        Serializer class for confirming email.
+
+        This serializer is used to validate the email confirmation token.
+
+        Fields:
+            email_confirm_token (CharField): The email confirmation token (required).
+      properties:
+        email_confirm_token:
+          type: string
+      required:
+      - email_confirm_token
+    CustomUser:
+      type: object
+      description: Serializer class to serialize CustomUser model.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          maxLength: 25
+      required:
+      - id
+      - username
+    DialogModel:
+      type: object
+      description: |-
+        Serializer class for the Dialog model.
+
+        This serializer is used to serialize and deserialize Dialog objects.
+
+        Fields:
+            latest_message (SerializerMethodField): The latest message associated with the dialog.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        latest_message:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 32
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user_id:
+          type: integer
+      required:
+      - created_at
+      - id
+      - latest_message
+      - name
+      - updated_at
+      - user_id
+    Email:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    MessageModel:
+      type: object
+      description: |-
+        Serializer class for the Message model.
+
+        This serializer is used to serialize and deserialize Message objects.
+
+        Methods:
+            create(self, validated_data): Creates a new message instance.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        message_text:
+          type: string
+        answer_text:
+          type: string
+        dialog_id:
+          type: integer
+      required:
+      - dialog_id
+      - id
+      - message_text
+    PasswordToken:
+      type: object
+      properties:
+        password:
+          type: string
+        token:
+          type: string
+      required:
+      - password
+      - token
+    PatchedCustomUser:
+      type: object
+      description: Serializer class to serialize CustomUser model.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          maxLength: 25
+    PatchedProfile:
+      type: object
+      description: Serializer class to serialize the user Profile model
+      properties:
+        user_id:
+          type: integer
+        first_name:
+          type: string
+          maxLength: 32
+        last_name:
+          type: string
+          maxLength: 32
+        avatar:
+          type: string
+          format: uri
+    Profile:
+      type: object
+      description: Serializer class to serialize the user Profile model
+      properties:
+        user_id:
+          type: integer
+        first_name:
+          type: string
+          maxLength: 32
+        last_name:
+          type: string
+          maxLength: 32
+        avatar:
+          type: string
+          format: uri
+      required:
+      - first_name
+      - last_name
+      - user_id
+    Register:
+      type: object
+      description: |-
+        Serializer class for user registration.
+
+        This serializer is used to register a new user.
+        It validates the email and password fields and creates a new User instance.
+
+        Fields:
+            email (EmailField): The user's email.
+            password (CharField): The user's password (write-only).
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - email
+      - id
+      - password
+    ResetToken:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+      - token
+    SelfUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        username:
+          type: string
+          maxLength: 25
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        is_email_confirmed:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - email
+      - id
+      - updated_at
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    UserLogin:
+      type: object
+      description: |-
+        Serializer class to authenticate users with email and password.
+
+        This serializer is used to validate user login credentials.
+        It takes an email and password as input and returns the authenticated user.
+
+        Fields:
+            email (CharField): The user's email.
+            password (CharField): The user's password (write-only).
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
