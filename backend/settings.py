@@ -84,10 +84,14 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'neondb',
+    'USER': 'FREDERICO23',
+    'PASSWORD': 'tRUguzGK05NV',
+    'HOST': 'ep-jolly-breeze-82299175.us-east-2.aws.neon.tech',
+    'PORT': '5432',
+  }
 }
 
 # Password validation
