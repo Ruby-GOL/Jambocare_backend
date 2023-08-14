@@ -57,6 +57,7 @@ django = "*"
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
 drf-spectacular = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
