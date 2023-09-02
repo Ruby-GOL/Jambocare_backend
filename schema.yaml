@@ -502,6 +502,150 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /chatbot/api/dialogues/:
     get:
       operationId: chatbot_api_dialogues_list
@@ -745,6 +889,106 @@ paths:
       - jwtAuth: []
       responses:
         '204':
+          description: No response body
+  /translator/play/:
+    post:
+      operationId: translator_play_create
+      description: |-
+        Plays an audio file.
+
+        This method plays an audio file.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing a success message.
+      tags:
+      - translator
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          description: No response body
+  /translator/record/:
+    post:
+      operationId: translator_record_create
+      description: |-
+        Records an audio file.
+
+        This method records an audio file and returns the recorded audio file.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing the recorded audio file.
+      tags:
+      - translator
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          description: No response body
+  /translator/save/:
+    post:
+      operationId: translator_save_create
+      description: |-
+        Saves transcribed and translated audio files.
+
+        This method transcribes an audio file, translates the transcription to English, saves the transcribed and translated text to a file, and converts the translated text to speech.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing the transcribed and translated audio files.
+      tags:
+      - translator
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          description: No response body
+  /translator/transcribe/:
+    post:
+      operationId: translator_transcribe_create
+      description: |-
+        Transcribes an audio file.
+
+        This method transcribes an audio file and returns the transcription.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing the transcription.
+      tags:
+      - translator
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          description: No response body
+  /translator/translate/:
+    post:
+      operationId: translator_translate_create
+      description: |-
+        Translates an audio file to the desired language.
+
+        This method records the audio, transcribes the audio, translates the transcription to the desired language, saves the transcribed and translated text to a file, and converts the translated text to speech.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            Response: The HTTP response containing the transcription, translation, and audio file.
+      tags:
+      - translator
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
           description: No response body
 components:
   schemas:
