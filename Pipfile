@@ -65,6 +65,7 @@ scipy = "*"
 gtts = "*"
 pyttsx3 = "*"
 keyboard = "*"
+audioread = "*"
 
 [dev-packages]
 

@@ -3,6 +3,7 @@ import sounddevice as sd
 import audiofile as af
 from scipy.io.wavfile import write
 from gtts import gTTS
+import audioread
 
 import multiprocessing
 import pyttsx3
@@ -34,6 +35,22 @@ def record_audio_manual(filename, sr = 44100):
 def play_audio(filename):
     signal, sr = af.read(filename)
     sd.play(signal, sr)
+# def play_audio(filename):
+#     with audioread.audio_open(filename) as f:
+#         sr = f.samplerate
+#         channels = f.channels
+
+#     if channels == 1:
+#         mono_signal, _ = af.read(filename)
+#         sd.play(mono_signal, sr, channels=1)
+#     elif channels == 2:
+#         stereo_signal, _ = af.read(filename)
+#         sd.play(stereo_signal, sr, channels=2)
+#     else:
+#         # Handle unsupported number of channels
+#         raise ValueError("Unsupported number of audio channels in the file.")
+
+#     sd.wait()
 
 def transcribe_audio(filename):
     audio_file= open(filename, "rb")
