@@ -83,7 +83,7 @@ class EmailConfirmationToken(models.Model):
     """
     Model to store email confirmation tokens.
 
-    This model represents a token used for email confirmation.
+    This model stores a token used for email confirmation.
     It stores the creation timestamp, the associated user, and a unique key.
 
     Fields:
