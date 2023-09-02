@@ -1,8 +1,0 @@
-/app/staticfiles
-/app/schema.yaml
-/app/.profile.d
-/app/LICENSE
-/app/runtime.txt
-/app/requirements.txt
-/app/README.md
-/app/.gitignore
