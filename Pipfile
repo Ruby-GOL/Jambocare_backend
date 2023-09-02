@@ -59,6 +59,13 @@ djangorestframework-simplejwt = "*"
 drf-spectacular = "*"
 psycopg2 = "*"
 openai-whisper = "*"
+sounddevice = "*"
+audiofile = "*"
+scipy = "*"
+gtts = "*"
+pyttsx3 = "*"
+keyboard = "*"
+audioread = "*"
 
 [dev-packages]
 
