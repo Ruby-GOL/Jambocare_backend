@@ -71,6 +71,8 @@ pyttsx3 = "*"
 keyboard = "*"
 audioread = "*"
 transformers = "*"
+torch = { version = "1.11.0+cpu", markers = "==cpu" }
+torchvision = { version = "0.12.0+cpu", markers = "==cpu" }
 
 [dev-packages]
 
