@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Translator</title>
+    <title>JamboCare Translator</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         /* Add your background gradient style here */
@@ -14,14 +14,13 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Voice Translator</h1>
+        <h1 class="text-center">JamboCare Translator</h1>
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <form method="post">
                     {% csrf_token %}
                     <div class="col-md-6">
                         <!-- Recording section -->
-                        <h3>Record Audio</h3>
                         <button id="record-button" class="btn btn-primary">Start Recording</button>
                         <button id="stop-button" class="btn btn-danger" style="display: none;">Stop Recording</button>
                         <audio id="audio" controls style="display: none;"></audio>
