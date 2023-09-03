@@ -100,54 +100,54 @@ class TranslateViewSet(viewsets.ViewSet):
 
         return Response({'translation': translation}, status=status.HTTP_200_OK)
     
-class RecordView(viewsets.ViewSet):
-    """
-    A ViewSet class that handles recording audio files.
+# class RecordView(viewsets.ViewSet):
+#     """
+#     A ViewSet class that handles recording audio files.
 
-    This ViewSet provides functionality for recording audio files and returning the recorded audio file.
+#     This ViewSet provides functionality for recording audio files and returning the recorded audio file.
 
-    Attributes:
-        queryset (QuerySet): The queryset of Message objects.
-        serializer_class (Serializer): The serializer class for Message objects.
-        filterset_class (FilterSet): The filterset class for Message objects.
-        permission_classes (list): The list of permission classes.
-        http_method_names (list): The list of allowed HTTP methods.
-    """
+#     Attributes:
+#         queryset (QuerySet): The queryset of Message objects.
+#         serializer_class (Serializer): The serializer class for Message objects.
+#         filterset_class (FilterSet): The filterset class for Message objects.
+#         permission_classes (list): The list of permission classes.
+#         http_method_names (list): The list of allowed HTTP methods.
+#     """
 
     
-    def create(self, request):
-        """
-        Records an audio file.
+#     def create(self, request):
+#         """
+#         Records an audio file.
 
-        This method records an audio file and saves it in the media directory as "audio.wav".
-        It overwrites the existing "audio.wav" file if it exists.
-        It returns the URL of the recorded audio file.
+#         This method records an audio file and saves it in the media directory as "audio.wav".
+#         It overwrites the existing "audio.wav" file if it exists.
+#         It returns the URL of the recorded audio file.
 
-        Args:
-            request (HttpRequest): The HTTP request object.
+#         Args:
+#             request (HttpRequest): The HTTP request object.
 
-        Returns:
-            Response: The HTTP response containing the URL of the recorded audio file.
-        """
-        filename = "audio.wav"
-        record_audio_manual(filename)
+#         Returns:
+#             Response: The HTTP response containing the URL of the recorded audio file.
+#         """
+#         filename = "audio.wav"
+#         record_audio_manual(filename)
 
-        # Define the path where the audio file will be saved in the media root
-        audio_path = os.path.join(settings.MEDIA_ROOT, filename)
+#         # Define the path where the audio file will be saved in the media root
+#         audio_path = os.path.join(settings.MEDIA_ROOT, filename)
 
-        # Delete the existing audio file if it exists
-        if default_storage.exists(audio_path):
-            default_storage.delete(audio_path)
+#         # Delete the existing audio file if it exists
+#         if default_storage.exists(audio_path):
+#             default_storage.delete(audio_path)
 
 
-        # Save the recorded audio to the media directory using default_storage
-        with open(filename, "rb") as audio_file:
-            default_storage.save(audio_path, ContentFile(audio_file.read()))
+#         # Save the recorded audio to the media directory using default_storage
+#         with open(filename, "rb") as audio_file:
+#             default_storage.save(audio_path, ContentFile(audio_file.read()))
 
-        # Generate the URL for the saved audio file
-        audio_url = default_storage.url(audio_path)
+#         # Generate the URL for the saved audio file
+#         audio_url = default_storage.url(audio_path)
 
-        return Response({'audio_url': audio_url}, status=status.HTTP_201_CREATED)
+#         return Response({'audio_url': audio_url}, status=status.HTTP_201_CREATED)
 
 class PlayView(viewsets.ViewSet):
     """
