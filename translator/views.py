@@ -149,42 +149,42 @@ class TranslateViewSet(viewsets.ViewSet):
 
 #         return Response({'audio_url': audio_url}, status=status.HTTP_201_CREATED)
 
-class PlayView(viewsets.ViewSet):
-    """
-    A ViewSet class that handles playing audio files.
+# class PlayView(viewsets.ViewSet):
+#     """
+#     A ViewSet class that handles playing audio files.
 
-    This ViewSet provides functionality for playing audio files.
+#     This ViewSet provides functionality for playing audio files.
 
-    Attributes:
-        queryset (QuerySet): The queryset of Message objects.
-        serializer_class (Serializer): The serializer class for Message objects.
-        filterset_class (FilterSet): The filterset class for Message objects.
-        permission_classes (list): The list of permission classes.
-        http_method_names (list): The list of allowed HTTP methods.
-    """
+#     Attributes:
+#         queryset (QuerySet): The queryset of Message objects.
+#         serializer_class (Serializer): The serializer class for Message objects.
+#         filterset_class (FilterSet): The filterset class for Message objects.
+#         permission_classes (list): The list of permission classes.
+#         http_method_names (list): The list of allowed HTTP methods.
+#     """
 
-    def create(self, request):
-        """
-        Plays an audio file.
+#     def create(self, request):
+#         """
+#         Plays an audio file.
 
-        This method plays an audio file and returns a success message.
+#         This method plays an audio file and returns a success message.
 
-        Args:
-            request (HttpRequest): The HTTP request object.
+#         Args:
+#             request (HttpRequest): The HTTP request object.
 
-        Returns:
-            Response: The HTTP response containing a success message.
-        """
-        # Assuming the 'audio.wav' file is saved in the MEDIA root directory
-        audio_path = os.path.join(settings.MEDIA_ROOT, 'audio.wav')
+#         Returns:
+#             Response: The HTTP response containing a success message.
+#         """
+#         # Assuming the 'audio.wav' file is saved in the MEDIA root directory
+#         audio_path = os.path.join(settings.MEDIA_ROOT, 'audio.wav')
 
-        if not default_storage.exists(audio_path):
-            return Response({'error': 'Audio file not found'}, status=status.HTTP_404_NOT_FOUND)
+#         if not default_storage.exists(audio_path):
+#             return Response({'error': 'Audio file not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Implement the play_audio function to play the 'audio.wav' file
-        play_audio(audio_path)
+#         # Implement the play_audio function to play the 'audio.wav' file
+#         play_audio(audio_path)
 
-        return Response({'message': 'Audio played successfully'}, status=status.HTTP_200_OK)
+#         return Response({'message': 'Audio played successfully'}, status=status.HTTP_200_OK)
 
 class TranscribeView(viewsets.ViewSet):
     """

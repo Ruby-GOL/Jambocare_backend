@@ -54,9 +54,9 @@ def say(text):
 #     sd.stop()
 #     write(filename, sr, audio)
 
-def play_audio(filename):
-    signal, sr = af.read(filename)
-    sd.play(signal, sr)
+# def play_audio(filename):
+#     signal, sr = af.read(filename)
+#     sd.play(signal, sr)
 
 
 def transcribe_audio(filename):
