@@ -5,7 +5,8 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.shortcuts import render, redirect
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import os
 from .speech_to_text import *
 # from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
@@ -24,7 +25,33 @@ LANGUAGES = [
     ("eng_Latn", "English"),
     ("deu_Latn", "German"),
 ]
+@csrf_exempt
+def translator(request):
+    if request.method == 'POST':
+        source_language_code = request.POST.get('source_language_code')
+        target_language_code = request.POST.get('target_language_code')
 
+        # Check if source and target languages are valid
+        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
+            return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
+
+        # Check if audio file exists
+        audio_path = os.path.join(settings.MEDIA_ROOT, 'audio.wav')
+        if not os.path.exists(audio_path):
+            return JsonResponse({'error': 'Audio file not found'}, status=404)
+
+        # Transcribe audio
+        transcription = transcribe_audio(audio_path)
+
+        # Translate transcription
+        translation = translate_text(transcription, source_language_code, target_language_code)
+
+        return JsonResponse({'source_language_code': source_language_code,
+                             'target_language_code': target_language_code,
+                             'transcription': transcription,
+                             'translation': translation})
+
+    return render(request, 'translate.html', {'LANGUAGES': LANGUAGES})
 
 class TranslateViewSet(viewsets.ViewSet):
     """

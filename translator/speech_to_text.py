@@ -65,13 +65,13 @@ def transcribe_audio(filename):
     audio_file.close()
     return transcript
 
-def translate_text(text, target_language_code):
-    translation = openai.Translation.translate(
-        api_key=openai.api_key,
-        text=text,
-        target_language=target_language_code
-    )
-    return translation
+# def translate_text(text, target_language_code):
+#     translation = openai.Translation.translate(
+#         api_key=openai.api_key,
+#         text=text,
+#         target_language=target_language_code
+#     )
+#     return translation
 
 def save_text_as_audio(text, audio_filename):
     myobj = gTTS(text=text, lang='en', slow=False)  

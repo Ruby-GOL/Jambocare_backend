@@ -10,5 +10,8 @@ router.register(r'transcribe', TranscribeView, basename='transcribe')
 router.register(r'save', SaveView, basename='save')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('api/', include(router.urls)),
+    path('', translator, name='translator'),
+
+
 ]
