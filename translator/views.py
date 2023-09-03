@@ -1,15 +1,30 @@
-from rest_framework.views import APIView
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
+from django.shortcuts import render, redirect
+
 import os
 from .speech_to_text import *
+# from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+# from .models import Translation
+# from .serializers import TranslationSerializer
 
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework import status
+# List of language codes and names
+LANGUAGES = [
+    ("som_Latn", "Somali"),
+    ("kik_Latn", "Kikuyu"),
+    ("luo_Latn", "Luo"),
+    ("kam_Latn", "Kamba"),
+    ("zul_Latn", "Zulu"),
+    ("swa_Latn", "Swahili"),
+    ("fra_Latn", "French"),
+    ("eng_Latn", "English"),
+    ("deu_Latn", "German"),
+]
+
 
 class TranslateViewSet(viewsets.ViewSet):
     """
@@ -24,8 +39,7 @@ class TranslateViewSet(viewsets.ViewSet):
         permission_classes (list): The list of permission classes.
         http_method_names (list): The list of allowed HTTP methods.
     """
-
-    
+        
     def create(self, request):
         """
         Translates an audio file.
@@ -38,19 +52,24 @@ class TranslateViewSet(viewsets.ViewSet):
         Returns:
             Response: The HTTP response containing the translated transcription.
         """
-        # Assuming the 'audio.wav' file is saved in the MEDIA root directory
+        # Get the selected source and target language codes from the request
+        source_language_code = request.data.get('source_language_code')
+        target_language_code = request.data.get('target_language_code')
+
+        # Check if the selected language codes are in the supported list
+        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
+
+            return Response({'error': 'Invalid source or target language code'}, status=status.HTTP_400_BAD_REQUEST)
+
         audio_path = os.path.join(settings.MEDIA_ROOT, 'audio.wav')
 
         if not default_storage.exists(audio_path):
             return Response({'error': 'Audio file not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        target_language_code = request.data.get('target_language_code')
-
-        # Transcribe the audio from 'audio.wav'
         transcription = transcribe_audio(audio_path)
 
-        # Translate the transcription to the desired language
-        translation = translate_text(transcription, target_language_code)
+        # Translate the transcription from source language to target language
+        translation = translate_text(transcription, source_language_code, target_language_code)
 
         return Response({'translation': translation}, status=status.HTTP_200_OK)
     
