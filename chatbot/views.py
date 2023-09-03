@@ -11,9 +11,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from accounts.permissions import IsEmailConfirm
 
-from .speech_to_text import *
-
-
 User = get_user_model()
 
 env = environ.Env()
@@ -139,76 +136,3 @@ class MessageModelViewSet(ModelViewSet):
 
         return Response(response, status=status.HTTP_200_OK)
 
-def record_audio_api(request):
-    filename = 'output.wav'  # Set the desired filename
-    record_audio_manual(filename)
-    
-    response_data = {
-        'status': 'success',
-        'message': 'Recording completed successfully.',
-    }
-    
-    return JsonResponse(response_data)
-
-def transcribe_audio_api(request):
-    # Replace 'input.wav' with the actual filename you want to transcribe
-    filename = 'output.wav'
-    transcript = transcribe_audio(filename)
-    
-    # You can add additional data to the response if needed
-    response_data = {
-        'transcript': transcript,
-        'status': 'success',
-    }
-    
-    return JsonResponse(response_data)
-
-def play_audio_api(request):
-    filename = 'output.wav'
-    play_audio(filename)
-    
-    response_data = {
-        'status': 'success',
-        'message': 'Audio playback initiated.',
-    }
-    
-    return JsonResponse(response_data)
-
-def save_text_as_audio_api(request):
-    text = 'Hello, this is a test.'  # Replace with the desired text
-    filename = 'test.mp3'  # Set the desired filename and format
-    save_text_as_audio(text, filename)
-    
-    response_data = {
-        'status': 'success',
-        'message': 'Text saved as audio successfully.',
-    }
-    
-    return JsonResponse(response_data)
-
-# import openai
-
-# # Set up the API key
-# openai.api_key = "YOUR_API_KEY"
-
-# # Load the audio file
-# with open("path/to/audio/file", "rb") as audio_file:
-#     audio_data = audio_file.read()
-
-# # Transcribe the audio file
-# transcription = openai.Audio.transcribe(
-#     api_key=openai.api_key,
-#     model="whisper-1",
-#     audio=audio_data,
-#     language="en-US"
-# )
-
-# # Translate the transcription to the desired language
-# translation = openai.Translation.translate(
-#     api_key=openai.api_key,
-#     text=transcription,
-#     target_language="es"
-# )
-
-# # Save the transcribed and translated text to your Django model
-# my_model = MyModel.objects.create(voice_record="path/to/audio/file", transcription=transcription, translation=translation)
