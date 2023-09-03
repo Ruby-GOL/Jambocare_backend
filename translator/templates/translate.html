@@ -17,7 +17,7 @@
         <h1 class="text-center">JamboCare Translator</h1>
         <div class="row">
             <div class="col-md-6 offset-md-3">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="col-md-6">
                         <!-- Recording section -->
@@ -26,7 +26,7 @@
                         <audio id="audio" controls style="display: none;"></audio>
                     </div>
                     <div class="form-group">
-                        <label for="source_language_code">Source Language:</label>
+                        <label for="source_language_code">Translate from:</label>
                         <select class="form-control" id="source_language_code" name="source_language_code">
                             {% for lang_code, lang_name in LANGUAGES %}
                                 <option value="{{ lang_code }}">{{ lang_name }}</option>
@@ -34,109 +34,147 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="target_language_code">Target Language:</label>
+                        <label for="target_language_code">Translate To:</label>
                         <select class="form-control" id="target_language_code" name="target_language_code">
                             {% for lang_code, lang_name in LANGUAGES %}
                                 <option value="{{ lang_code }}">{{ lang_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary">Translate</button>
+                    <button type="button" id="translate-button" class="btn btn-primary">Translate</button>
+                    <button type="button" class="btn btn-secondary" id="reset-button">Reset</button>
+
+                    {% comment %} <button type="submit" class="btn btn-primary">Translate</button> {% endcomment %}
                 </form>
             </div>
         </div>
-        {% if transcription %}
 
         <div class="row mt-4">
             <div class="col-md-6 offset-md-3">
+                {% if transcription %}
+
                 <h3>Transcription:</h3>
                 <textarea class="form-control" rows="4" readonly>{{ transcription }}</textarea>
+                {% comment %} {% endif %}
+
+                {% if translation %} {% endcomment %}
                 <h3>Translation:</h3>
                 <textarea class="form-control" rows="4" readonly>{{ translation }}</textarea>
+                {% endif %}        
+
             </div>
         </div>
-        {% endif %}        
      
     </div>
-<script>
-     // JavaScript
-const recordButton = document.getElementById('record-button');
-const stopButton = document.getElementById('stop-button');
-const audio = document.getElementById('audio');
+    <script>
+        // JavaScript
+        const recordButton = document.getElementById('record-button');
+        const stopButton = document.getElementById('stop-button');
+        const audio = document.getElementById('audio');
+        const resetButton = document.getElementById('reset-button'); 
 
-let mediaRecorder;
-let chunks = [];
-let recording = false;
-
-recordButton.addEventListener('click', startRecording);
-stopButton.addEventListener('click', stopRecording);
-
-function startRecording() {
-    if (recording) {
-        return;
-    }
-
-    chunks = [];
-    const constraints = { audio: true };
-    
-    navigator.mediaDevices.getUserMedia(constraints)
-        .then(function(stream) {
-            mediaRecorder = new MediaRecorder(stream);
-
-            mediaRecorder.ondataavailable = function(event) {
-                if (event.data.size > 0) {
-                    chunks.push(event.data);
+        
+        let mediaRecorder;
+        let chunks = [];
+        let recording = false;
+        
+        recordButton.addEventListener('click', startRecording);
+        stopButton.addEventListener('click', stopRecording);
+        
+        function startRecording() {
+            if (recording) {
+                return;
+            }
+        
+            chunks = [];
+            const constraints = { audio: true };
+            
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function(stream) {
+                    mediaRecorder = new MediaRecorder(stream);
+        
+                    mediaRecorder.ondataavailable = function(event) {
+                        if (event.data.size > 0) {
+                            chunks.push(event.data);
+                        }
+                    }
+        
+                    mediaRecorder.onstop = function() {
+                        const blob = new Blob(chunks, { type: 'audio/wav' });
+                        audio.src = URL.createObjectURL(blob);
+        
+                        // Send the recorded audio to the server
+                        sendAudioToServer(blob);
+                    }
+        
+                    mediaRecorder.start();
+                    recordButton.style.display = 'none';
+                    stopButton.style.display = 'inline-block';
+                    audio.style.display = 'none';
+                    recording = true;
+                })
+                .catch(function(err) {
+                    console.error('Error accessing microphone:', err);
+                });
+        }
+        
+        function stopRecording() {
+            if (!recording) {
+                return;
+            }
+        
+            mediaRecorder.stop();
+            recordButton.style.display = 'inline-block';
+            stopButton.style.display = 'none';
+            audio.style.display = 'inline-block';
+            recording = false;
+        }
+        
+        // Function to send recorded audio to the server
+        function sendAudioToServer(audioBlob) {
+            const url = '/translator/save_audio/';  // Make sure this URL matches your Django URL pattern
+        
+            // Create a FormData object to send the audio file
+            const formData = new FormData();
+            formData.append('audio', audioBlob);
+        
+            // Get the CSRF token from the page's HTML
+            const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+        
+            // Send a POST request with the audio data and CSRF token
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    // Handle a successful response (e.g., display a message)
+                    console.log('Audio saved successfully.');
+                } else {
+                    // Handle an error response (e.g., display an error message)
+                    console.error('Error saving audio:', response.statusText);
                 }
-            }
+            })
+            .catch(error => {
+                // Handle any network errors here
+                console.error('Network error:', error);
+            });
+        }
+        
+        
+        
+                    // Add click event listener to reset button
+            resetButton.addEventListener('click', function() {
+                // Reload the page to reset everything
+                window.location.reload();
+            });
 
-            mediaRecorder.onstop = function() {
-                const blob = new Blob(chunks, { type: 'audio/wav' });
-                audio.src = URL.createObjectURL(blob);
-            }
-
-            mediaRecorder.start();
-            recordButton.style.display = 'none';
-            stopButton.style.display = 'inline-block';
-            audio.style.display = 'none';
-            recording = true;
-        })
-        .catch(function(err) {
-            console.error('Error accessing microphone:', err);
-        });
-}
-
-function stopRecording() {
-    if (!recording) {
-        return;
-    }
-
-    mediaRecorder.stop();
-    recordButton.style.display = 'inline-block';
-    stopButton.style.display = 'none';
-    audio.style.display = 'inline-block';
-    recording = false;
-}
-
-// Add code to submit the form and handle transcription/translation here
-const translateForm = document.getElementById('translate-form');
-const transcriptionText = document.getElementById('transcription-text');
-const translationText = document.getElementById('translation-text');
-
-translateForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Check if recording is in progress
-    if (recording) {
-        alert('Stop the recording before translating.');
-        return;
-    }
-
-    // Add logic to submit the form and handle transcription/translation here
-    // You can use fetch() to send the audio data and form data to the server
-});
-
-</script>
+   </script>
+   
+   
     
 </body>
 </html>
