@@ -11,7 +11,8 @@ router.register(r'save', SaveView, basename='save')
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('', translator, name='translator'),
-
+    path('', record_audio, name='record_audio'),
+    path('translate/',translator, name='translator'),
+    path('save_audio/', save_audio, name='save_audio'),
 
 ]

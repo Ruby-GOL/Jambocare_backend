@@ -10,12 +10,13 @@ import pyttsx3
 import keyboard
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-# Initialize the model and tokenizer during application startup
 api_token = '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'
-tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token, src_lang="som_Latn")
-model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token)
 
 def translate_text(text, source_language_code, target_language_code):
+    # Load the Hugging Face model and tokenizer
+    tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token, src_lang=source_language_code)
+    model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token)
+
     # Prepare the input text for translation
     inputs = tokenizer(text, return_tensors="pt")
 
@@ -23,12 +24,11 @@ def translate_text(text, source_language_code, target_language_code):
     translated_tokens = model.generate(
          **inputs, forced_bos_token_id=tokenizer.lang_code_to_id[target_language_code], max_length=30
     )
-    
+
     # Decode the translated tokens into text
     translation = tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)[0]
-    
-    return translation
 
+    return translation
 
 def say(text):
 		p = multiprocessing.Process(target=pyttsx3.speak, args=(text,))

@@ -27,31 +27,69 @@ LANGUAGES = [
 ]
 @csrf_exempt
 def translator(request):
+    transcription = None
+    translation =None
+
     if request.method == 'POST':
         source_language_code = request.POST.get('source_language_code')
         target_language_code = request.POST.get('target_language_code')
 
-        # Check if source and target languages are valid
-        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
+        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(
+                lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
             return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
 
-        # Check if audio file exists
         audio_path = os.path.join(settings.MEDIA_ROOT, 'audio.wav')
         if not os.path.exists(audio_path):
             return JsonResponse({'error': 'Audio file not found'}, status=404)
 
-        # Transcribe audio
         transcription = transcribe_audio(audio_path)
 
-        # Translate transcription
-        translation = translate_text(transcription, source_language_code, target_language_code)
+        # # Translate the transcribed text
+        # translation = translate_text(transcription, source_language_code, target_language_code)
 
-        return JsonResponse({'source_language_code': source_language_code,
-                             'target_language_code': target_language_code,
-                             'transcription': transcription,
-                             'translation': translation})
+        # return JsonResponse({'source_language_code': source_language_code,
+        #                      'target_language_code': target_language_code,
+        #                      'transcription': transcription,
+        #                      'translation': translation})
 
+    return render(request, 'translate.html', {'LANGUAGES': LANGUAGES, 'transcription': transcription, 'translation': translation})
+
+@csrf_exempt
+def record_audio(request):
+    if request.method == 'POST':
+        source_language_code = request.POST.get('source_language_code')
+        target_language_code = request.POST.get('target_language_code')
+
+        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(
+                lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
+            return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
+        
     return render(request, 'translate.html', {'LANGUAGES': LANGUAGES})
+
+@csrf_exempt
+def save_audio(request):
+    if request.method == 'POST':
+        audio_file = request.FILES.get('audio')
+        if audio_file:
+            # Define the file name
+            file_name = 'audio.wav'
+            
+            # Construct the full path to the audio file
+            audio_path = os.path.join(settings.MEDIA_ROOT, file_name)
+            
+            # Delete the existing audio.wav file if it exists
+            if default_storage.exists(audio_path):
+                default_storage.delete(audio_path)
+            
+            # Save the new audio file in Django's MEDIA folder
+            file_path = default_storage.save(audio_path, audio_file)
+
+            print("Audio file saved at:", file_path)  # Add this line for debugging
+
+            return JsonResponse({'message': 'Audio saved successfully', 'file_path': file_path})
+
+    return JsonResponse({'error': 'Failed to save audio'},status=400)
+
 
 class TranslateViewSet(viewsets.ViewSet):
     """
