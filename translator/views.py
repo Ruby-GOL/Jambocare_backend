@@ -44,7 +44,7 @@ def translator(request):
 
         transcription = transcribe_audio(audio_path)
 
-        # Translate the transcribed text
+        # # Translate the transcribed text
         # translation = translate_text(transcription, source_language_code, target_language_code)
 
         # return JsonResponse({'source_language_code': source_language_code,
@@ -54,6 +54,17 @@ def translator(request):
 
     return render(request, 'translate.html', {'LANGUAGES': LANGUAGES, 'transcription': transcription, 'translation': translation})
 
+@csrf_exempt
+def record_audio(request):
+    if request.method == 'POST':
+        source_language_code = request.POST.get('source_language_code')
+        target_language_code = request.POST.get('target_language_code')
+
+        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(
+                lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
+            return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
+        
+    return render(request, 'translate.html', {'LANGUAGES': LANGUAGES})
 
 @csrf_exempt
 def save_audio(request):
