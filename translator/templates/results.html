@@ -43,10 +43,7 @@
                         </select>
                     </div>
                     <button type="submit" id="translate-button" class="btn btn-primary">Translate</button>
-                    <a href="{% url 'translator'%}" class="btn btn-secondary" >
-                        Reset
-                    </a>
-                    
+                    <button type="button" class="btn btn-secondary" id="reset-button">Reset</button>
 
                     {% comment %} <button type="submit" class="btn btn-primary">Translate</button> {% endcomment %}
                 </form>
@@ -74,17 +71,16 @@
         // JavaScript
         const recordButton = document.getElementById('record-button');
         const stopButton = document.getElementById('stop-button');
-        const translateButton = document.getElementById('translate-button');
         const audio = document.getElementById('audio');
+        const resetButton = document.getElementById('reset-button'); 
+
         
         let mediaRecorder;
         let chunks = [];
         let recording = false;
-        let translateClicked = false; // Flag to track if the "Translate" button was clicked
         
         recordButton.addEventListener('click', startRecording);
         stopButton.addEventListener('click', stopRecording);
-        translateButton.addEventListener('click', translateAudio);
         
         function startRecording() {
             if (recording) {
@@ -108,13 +104,8 @@
                         const blob = new Blob(chunks, { type: 'audio/wav' });
                         audio.src = URL.createObjectURL(blob);
         
-                        // Enable the "Translate" button after recording
-                        translateButton.disabled = false;
-                        
-                        // Save the recorded audio only if the "Translate" button was clicked
-                        if (translateClicked) {
-                            sendAudioToServer(blob);
-                        }
+                        // Send the recorded audio to the server
+                        sendAudioToServer(blob);
                     }
         
                     mediaRecorder.start();
@@ -144,46 +135,33 @@
                 recording = false;
             };
         }
+
+        // Function to send recorded audio to the server
+        function sendAudioToServer(audioBlob) {
+            const url = '/translator/save_audio/';  // Make sure this URL matches your Django URL pattern
         
-        function translateAudio() {
-            // Disable the "Translate" button while processing
-            translateButton.disabled = true;
-            
-            // Set the flag to indicate the "Translate" button was clicked
-            translateClicked = true;
-            
-            // Call the transcription and translation functions on the server
-            const url = '/translator/translate/';  // Make sure this URL matches your Django URL pattern
+            // Create a FormData object to send the audio file
+            const formData = new FormData();
+            formData.append('audio', audioBlob);
         
-            // Define the source and target languages (replace with actual values)
-            const sourceLanguageCode = 'en';
-            const targetLanguageCode = 'fr';
+            // Get the CSRF token from the page's HTML
+            const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
         
-            // Send a POST request to trigger transcription and translation
+            // Send a POST request with the audio data and CSRF token
             fetch(url, {
                 method: 'POST',
-                body: JSON.stringify({
-                    source_language_code: sourceLanguageCode,
-                    target_language_code: targetLanguageCode,
-                }),
+                body: formData,
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken,  // Make sure csrfToken is defined
+                    'X-CSRFToken': csrfToken,
                 },
             })
             .then(response => {
                 if (response.status === 200) {
-                    // Handle a successful response (e.g., update the UI with the transcription and translation)
-                    response.json().then(data => {
-                        console.log('Transcription:', data.transcription);
-                        console.log('Translation:', data.translation);
-                        // Update the UI with the transcription and translation
-                        document.getElementById('transcription-output').textContent = data.transcription;
-                        document.getElementById('translation-output').textContent = data.translation;
-                    });
+                    // Handle a successful response (e.g., display a message)
+                    console.log('Audio saved successfully.');
                 } else {
                     // Handle an error response (e.g., display an error message)
-                    console.error('Error translating audio:', response.statusText);
+                    console.error('Error saving audio:', response.statusText);
                 }
             })
             .catch(error => {
@@ -191,8 +169,18 @@
                 console.error('Network error:', error);
             });
         }
-    </script>
-    
+        
+        
+        
+                    // Add click event listener to reset button
+            resetButton.addEventListener('click', function() {
+                // Reload the page to reset everything
+                window.location.reload();
+            });
+
+   </script>
+   
+   
     
 </body>
 </html>

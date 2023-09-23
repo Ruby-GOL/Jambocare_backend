@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django_rest_passwordreset',
     'drf_yasg',
     'drf_spectacular',
+    # Media Cloudinary
+    "cloudinary",
+    "cloudinary_storage",
 
     'accounts',
     'chatbot',
@@ -85,14 +88,10 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'neondb',
-    'USER': env('DATABASE_USER'),
-    'PASSWORD': env('DATABASE_PASSWORD'),
-    'HOST': env('DATABASE_HOST'),
-    'PORT': '5432',
-  }
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
 }
 
 # Password validation
@@ -130,8 +129,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static_django/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_django/')
+# STATIC_URL = '/static_django/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static_django/')
 
 
 # Default primary key field type
@@ -225,10 +224,39 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 AUTH_USER_MODEL = "accounts.User"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+# Media Files Settings
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dspgpjndb', #env('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': '452696671525819', #env('CLOUDINARY_API_KEY'),
+    'API_SECRET': 'ZzD1uzbcyeyNyRc809zZdPmi54w' #env('CLOUDINARY_API_SECRET'),
+}
+
+if DEBUG:
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "media"
+else:
+    MEDIA_URL = "/media/"
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+
+STATIC_URL = "/static/"
+STATICFILES_DIRS = (BASE_DIR / "static",)
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+import dj_database_url
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES["default"].update(db_from_env)
+
 
 django_heroku.settings(locals())
 # del DATABASES['default']['OPTIONS']['sslmode'] 
