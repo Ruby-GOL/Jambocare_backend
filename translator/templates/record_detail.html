@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock title %}
+<style>
+    .blue-bg {
+      background-color: blue;
+      color: white;
+    }
+  
+    .grey-bg {
+      background-color: grey;
+      color: white;
+    }
+  </style>
+{% block content %}
+<section class="section" style="background: linear-gradient(to bottom, #3498db, #ffffff);">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-offset-4 is-4">
+        <h1 class="title">Recorded Audio</h1>
+        <div class="card">
+          <div class="card-content">
+            <audio src="{{ record.voice_record.url }}" controls></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-offset-4 is-4">
+          <h1 class="title">Translate</h1>
+          <div class="card">
+            <div class="card-content">
+              <h1 class="text-center">Choose languages</h1>
+              <div class="row">
+                <div class="col-md-6 offset-md-3">
+                 <!-- Add this form for translation -->
+                    <form method="post" action="{% url 'translate_audio' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                        <label for="source_language_code">Translate from:</label>
+                        <select class="form-control" id="source_language_code" name="source_language_code">
+                            {% for lang_code, lang_name in LANGUAGES %}
+                            <option value="{{ lang_code }}">{{ lang_name }}</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                        <div class="form-group">
+                        <label for="target_language_code">Translate To:</label>
+                        <select class="form-control" id="target_language_code" name="target_language_code">
+                            {% for lang_code, lang_name in LANGUAGES %}
+                            <option value="{{ lang_code }}">{{ lang_name }}</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Translate </button>
+                    </form>   
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col-md-6 offset-md-3">
+                  {% if transcription %}
+                  <h3>Transcription:</h3>
+                  <textarea class="form-control" rows="4" readonly>{{ transcription }}</textarea>
+                  {% endif %}
+                  {% if translation %}
+                  <h3>Translation:</h3>
+                  <textarea class="form-control" rows="4" readonly>{{ translation }}</textarea>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+{% endblock content %}

@@ -1,3 +1,5 @@
+import os
+
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,11 +9,12 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import os
+from django.contrib import messages
+from django.http.response import JsonResponse
+from django.shortcuts import get_object_or_404, render
+
+from .models import Record
 from .speech_to_text import *
-# from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-# from .models import Translation
-# from .serializers import TranslationSerializer
 
 # List of language codes and names
 LANGUAGES = [
@@ -25,46 +28,35 @@ LANGUAGES = [
     ("eng_Latn", "English"),
     ("deu_Latn", "German"),
 ]
-@csrf_exempt
-def translator(request):
-    transcription = None
-    translation =None
 
-    if request.method == 'POST':
-        source_language_code = request.POST.get('source_language_code')
-        target_language_code = request.POST.get('target_language_code')
+def record(request):
+    if request.method == "POST":
+        audio_file = request.FILES.get("recorded_audio")
+        language = request.POST.get("language")
+        record = Record.objects.create(language=language, voice_record=audio_file)
+        record.save()
+        messages.success(request, "Audio recording successfully added!")
+        return JsonResponse(
+            {
+                "url": record.get_absolute_url(),
+                "success": True,
+            }
+        )
+    context = {"page_title": "Record audio"}
+    return render(request, "record.html", context)
 
-        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(
-                lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
-            return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
 
-        audio_path = os.path.join(settings.MEDIA_ROOT, 'audio.wav')
-        if not os.path.exists(audio_path):
-            return JsonResponse({'error': 'Audio file not found'}, status=404)
+def record_detail(request, id):
+    record = get_object_or_404(Record, id=id)  
+   
+    context = {
+        "page_title": "Recorded audio detail",
+        "record": record,
+        "LANGUAGES": LANGUAGES,  # Include your custom LANGUAGES list in the context
+    }
+    return render(request, "record_detail.html", context)
 
-        transcription = transcribe_audio(audio_path)
 
-        # # Translate the transcribed text
-        # translation = translate_text(transcription, source_language_code, target_language_code)
-
-        # return JsonResponse({'source_language_code': source_language_code,
-        #                      'target_language_code': target_language_code,
-        #                      'transcription': transcription,
-        #                      'translation': translation})
-
-    return render(request, 'translate.html', {'LANGUAGES': LANGUAGES, 'transcription': transcription, 'translation': translation})
-
-@csrf_exempt
-def record_audio(request):
-    if request.method == 'POST':
-        source_language_code = request.POST.get('source_language_code')
-        target_language_code = request.POST.get('target_language_code')
-
-        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(
-                lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
-            return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
-        
-    return render(request, 'translate.html', {'LANGUAGES': LANGUAGES})
 
 @csrf_exempt
 def save_audio(request):
@@ -89,6 +81,110 @@ def save_audio(request):
             return JsonResponse({'message': 'Audio saved successfully', 'file_path': file_path})
 
     return JsonResponse({'error': 'Failed to save audio'},status=400)
+
+from django.http import JsonResponse, HttpResponse
+import os
+from django.conf import settings
+from django.template import loader
+
+
+def translate_audio(request):
+    transcription = None
+    translation = None
+
+    if request.method == 'POST':
+        source_language_code = request.POST.get('source_language_code')
+        target_language_code = request.POST.get('target_language_code')
+
+        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(
+                lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
+            return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
+
+        # Fetch the latest audio file from the 'records' directory in media
+        records_directory = os.path.join(settings.MEDIA_ROOT, 'records')
+        latest_audio_file = get_latest_audio_file(records_directory)
+
+        if not latest_audio_file:
+            return JsonResponse({'error': 'No audio file found in records directory'}, status=400)
+
+        # Call your transcription function to transcribe the audio
+        transcription = transcribe_audio(latest_audio_file)  # Replace with your transcription logic
+
+        # Call your translation function to translate the transcription text
+        # if transcription:
+        #     translation = translate_text(transcription, source_language_code, target_language_code)  # Replace with your translation logic
+
+        # Load the 'record_detail.html' template with the appropriate context
+        template = loader.get_template('record_detail.html')
+        context = {
+            'source_language_code': source_language_code,
+            'target_language_code': target_language_code,
+            'transcription': transcription,
+            'translation': translation,
+            'LANGUAGES': LANGUAGES,
+        }
+        rendered_content = template.render(context)
+        
+        # Return the rendered content as an HTML response
+        return HttpResponse(rendered_content)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+def get_latest_audio_file(directory):
+    audio_files = [f for f in os.listdir(directory) if f.endswith('.webm')]
+    if not audio_files:
+        return None
+    audio_files.sort(key=lambda x: os.path.getmtime(os.path.join(directory, x)), reverse=True)
+    return os.path.join(directory, audio_files[0])
+
+
+@csrf_exempt
+def translator(request):
+    transcription = None
+    translation = None
+
+    if request.method == 'POST':
+        source_language_code = request.POST.get('source_language_code')
+        target_language_code = request.POST.get('target_language_code')
+
+        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(
+                lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
+            return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
+
+        # # Save the audio before transcribing
+        saved_audio_path = save_audio(request)
+        if 'error' in saved_audio_path:
+            return JsonResponse(saved_audio_path, status=400)
+
+        audio_path = os.path.join(settings.MEDIA_ROOT, 'audio.wav')
+        if not os.path.exists(audio_path):
+            return JsonResponse({'error': 'Audio file not found'}, status=404)
+
+        transcription = transcribe_audio(audio_path)
+
+        # Translate the transcribed text
+        # translation = translate_text(transcription, source_language_code, target_language_code)
+
+        return JsonResponse({'source_language_code': source_language_code,
+                             'target_language_code': target_language_code,
+                             'transcription': transcription,
+                             'translation': translation})
+
+    return render(request, 'translate.html', {'LANGUAGES': LANGUAGES, 'transcription': transcription, 'translation': translation})
+
+
+@csrf_exempt
+def record_audio(request):
+    if request.method == 'POST':
+        source_language_code = request.POST.get('source_language_code')
+        target_language_code = request.POST.get('target_language_code')
+
+        if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(
+                lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
+            return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
+        
+    return render(request, 'translate.html', {'LANGUAGES': LANGUAGES})
+
 
 
 class TranslateViewSet(viewsets.ViewSet):
