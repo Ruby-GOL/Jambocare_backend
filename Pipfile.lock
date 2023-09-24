@@ -977,23 +977,7 @@
             "index": "pypi",
             "version": "==9.5.0"
         },
-        "psycopg2": {
-            "hashes": [
-                "sha256:1a6a2d609bce44f78af4556bea0c62a5e7f05c23e5ea9c599e07678995609084",
-                "sha256:44d93a0109dfdf22fe399b419bcd7fa589d86895d3931b01fb321d74dadc68f1",
-                "sha256:8275abf628c6dc7ec834ea63f6f3846bf33518907a2b9b693d41fd063767a866",
-                "sha256:91e81a8333a0037babfc9fe6d11e997a9d4dac0f38c43074886b0d9dead94fe9",
-                "sha256:b22ed9c66da2589a664e0f1ca2465c29b75aaab36fa209d4fb916025fb9119e5",
-                "sha256:b6bd7d9d3a7a63faae6edf365f0ed0e9b0a1aaf1da3ca146e6b043fb3eb5d723",
-                "sha256:c7949770cafbd2f12cecc97dea410c514368908a103acf519f2a346134caa4d5",
-                "sha256:d1210fcf99aae6f728812d1d2240afc1dc44b9e6cba526a06fb8134f969957c2",
-                "sha256:d5c5297e2fbc8068d4255f1e606bfc9291f06f91ec31b2a0d4c536210ac5c0a2",
-                "sha256:e9b04cbef584310a1ac0f0d55bb623ca3244c87c51187645432e342de9ae81a8",
-                "sha256:f00cc35bd7119f1fed17b85bd1007855194dde2cbd8de01ab8ebb17487440ad8"
-            ],
-            "markers": "python_version >= '3.6'",
-            "version": "==2.9.7"
-        },
+        
         "psycopg2-binary": {
             "hashes": [
                 "sha256:00d8db270afb76f48a499f7bb8fa70297e66da67288471ca873db88382850bf4",
@@ -1105,26 +1089,6 @@
             ],
             "index": "pypi",
             "version": "==2023.3"
-        },
-        "pywin32": {
-            "hashes": [
-                "sha256:06d3420a5155ba65f0b72f2699b5bacf3109f36acbe8923765c22938a69dfc8d",
-                "sha256:1c73ea9a0d2283d889001998059f5eaaba3b6238f767c9cf2833b13e6a685f65",
-                "sha256:37257794c1ad39ee9be652da0462dc2e394c8159dfd913a8a4e8eb6fd346da0e",
-                "sha256:383229d515657f4e3ed1343da8be101000562bf514591ff383ae940cad65458b",
-                "sha256:39b61c15272833b5c329a2989999dcae836b1eed650252ab1b7bfbe1d59f30f4",
-                "sha256:5821ec52f6d321aa59e2db7e0a35b997de60c201943557d108af9d4ae1ec7040",
-                "sha256:70dba0c913d19f942a2db25217d9a1b726c278f483a919f1abfed79c9cf64d3a",
-                "sha256:72c5f621542d7bdd4fdb716227be0dd3f8565c11b280be6315b06ace35487d36",
-                "sha256:84f4471dbca1887ea3803d8848a1616429ac94a4a8d05f4bc9c5dcfd42ca99c8",
-                "sha256:a7639f51c184c0272e93f244eb24dafca9b1855707d94c192d4a0b4c01e1100e",
-                "sha256:e25fd5b485b55ac9c057f67d94bc203f3f6595078d1fb3b458c9c28b7153a802",
-                "sha256:e4c092e2589b5cf0d365849e73e02c391c1349958c5ac3e9d5ccb9a28e017b3a",
-                "sha256:e65028133d15b64d2ed8f06dd9fbc268352478d4f9289e69c190ecd6818b6407",
-                "sha256:e8ac1ae3601bee6ca9f7cb4b5363bf1c0badb935ef243c4733ff9a393b1690c0"
-            ],
-            "markers": "platform_system == 'Windows'",
-            "version": "==306"
         },
         "pyyaml": {
             "hashes": [
