@@ -8,7 +8,7 @@ import audioread
 import multiprocessing
 import pyttsx3
 import keyboard
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
 
 api_token = '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'
 
@@ -30,11 +30,22 @@ def translate_text(text, source_language_code, target_language_code):
 
     return translation
 
+# def transcribe_audio(filename):
+#     audio_file= open(filename, "rb")
+#     transcript = openai.Audio.transcribe("whisper-1", audio_file)
+#     audio_file.close()
+#     return transcript
+
 def transcribe_audio(filename):
-    audio_file= open(filename, "rb")
-    transcript = openai.Audio.transcribe("whisper-1", audio_file)
-    audio_file.close()
-    return transcript
+    transcriber = pipeline(model="openai/whisper-large")
+    result = transcriber(filename)
+
+    if result and 'text' in result[0]:
+        transcription = result[0]['text']
+        return transcription
+    else:
+        return "Transcription not available."
+
 
 def say(text):
 		p = multiprocessing.Process(target=pyttsx3.speak, args=(text,))
