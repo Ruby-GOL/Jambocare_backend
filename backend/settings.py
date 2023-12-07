@@ -227,9 +227,9 @@ AUTH_USER_MODEL = "accounts.User"
 # Media Files Settings
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dspgpjndb', #env('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': '452696671525819', #env('CLOUDINARY_API_KEY'),
-    'API_SECRET': 'ZzD1uzbcyeyNyRc809zZdPmi54w' #env('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': 'dpesoiqvk', #env('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': '239277538961433', #env('CLOUDINARY_API_KEY'),
+    'API_SECRET': 'Ak-dfKUiytDqeQx0J4XPjrJVUlo' #env('CLOUDINARY_API_SECRET'),
 }
 
 if DEBUG:
