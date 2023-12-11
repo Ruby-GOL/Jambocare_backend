@@ -58,7 +58,6 @@ environ = "*"
 django-heroku = "*"
 gunicorn = "*"
 whitenoise = "*"
-django = "*"
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
 drf-spectacular = "*"
@@ -72,6 +71,7 @@ audioread = "*"
 transformers = "*"
 psycopg2-binary = "*"
 django-cloudinary-storage = "*"
+django = "==4.2.5"
 
 [dev-packages]
 
