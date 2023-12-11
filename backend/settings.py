@@ -19,7 +19,7 @@ environ.Env.read_env()
 SECRET_KEY = 'django-insecure-cb$usm+&s6us22g(5bhlkr9jx+t(e2mdrg8^$j0(o#v49%p_c3' #env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG') == 'True'
+DEBUG = False #env('DEBUG') == 'True'
 
 ALLOWED_HOSTS = ["*"]
 
@@ -169,8 +169,8 @@ SPECTACULAR_SETTINGS = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=float(env('ACCESS_TOKEN_LIFETIME_MINUTES'))),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=float(env('REFRESH_TOKEN_LIFETIME_DAYS'))),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=float(60)),# env('ACCESS_TOKEN_LIFETIME_MINUTES')
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=float(30)), #env('REFRESH_TOKEN_LIFETIME_DAYS')
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
@@ -220,12 +220,19 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_USE_TLS = env('EMAIL_USE_TLS') == 'True'
-EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_SSL = env('EMAIL_USE_SSL') == 'True'
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_PORT=587
+EMAIL_HOST_USER='adhingafredrick@gmai.com'
+EMAIL_HOST_PASSWORD='Fred.9707.23'
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+
+# EMAIL_HOST = env('EMAIL_HOST')
+# EMAIL_USE_TLS = env('EMAIL_USE_TLS') == 'True'
+# EMAIL_PORT = env('EMAIL_PORT')
+# EMAIL_USE_SSL = env('EMAIL_USE_SSL') == 'True'
+# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 AUTH_USER_MODEL = "accounts.User"
 
