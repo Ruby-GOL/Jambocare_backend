@@ -13,11 +13,11 @@ from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
 # Define global variables for the model and huggingface api token
 
 api_token = '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'
+model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token)
 
 def translate_text(text, source_language_code, target_language_code):
     # Load the Hugging Face tokenizer
     tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token, src_lang=source_language_code)
-    model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token)
 
     # Prepare the input text for translation
     inputs = tokenizer(text, return_tensors="pt")
