@@ -1,4 +1,5 @@
 import os
+import requests
 
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -12,7 +13,6 @@ from django.http import JsonResponse, HttpResponse
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 
-
 from .models import Record
 from .speech_to_text import *
 
@@ -23,7 +23,7 @@ LANGUAGES = [
     ("luo_Latn", "Luo"),
     ("kam_Latn", "Kamba"),
     ("zul_Latn", "Zulu"),
-    ("swa_Latn", "Swahili"),
+    ("swh_Latn", "Swahili"),
     ("fra_Latn", "French"),
     ("eng_Latn", "English"),
     ("deu_Latn", "German"),
@@ -56,7 +56,6 @@ def record_detail(request, id):
     }
     return render(request, "record_detail.html", context)
 
-
 def translate_audio(request):
     transcription = None
     translation = None
@@ -86,7 +85,21 @@ def translate_audio(request):
             return JsonResponse({'error': 'Invalid transcription format'}, status=400)
 
         # Translate the transcribed text
-        translation = translate_text(transcription, source_language_code, target_language_code)
+        api_endpoint = "http://172.203.239.63:5000/translate"  
+        payload = {
+            'text': transcription,
+            'source_language_code': source_language_code,
+            'target_language_code': target_language_code
+        }
+        print(payload)
+        translation_response = requests.post(api_endpoint, json=payload)
+        print(translation_response.text)
+        # Check if the translation request was successful
+        if translation_response.status_code == 200:
+            translation = translation_response.json().get('translation', '')
+        else:
+            error_message = translation_response.json().get('error', 'Translation failed. Check the server or input parameters.')
+            return JsonResponse({'error': error_message}, status=400)
 
         # Load the 'record_detail.html' template with the appropriate context
         template = loader.get_template('record_detail.html')
@@ -103,6 +116,54 @@ def translate_audio(request):
         return HttpResponse(rendered_content)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+# def translate_audio(request):
+#     transcription = None
+#     translation = None
+
+#     if request.method == 'POST':
+#         source_language_code = request.POST.get('source_language_code')
+#         target_language_code = request.POST.get('target_language_code')
+
+#         if not any(lang_tuple[0] == source_language_code for lang_tuple in LANGUAGES) or not any(
+#                 lang_tuple[0] == target_language_code for lang_tuple in LANGUAGES):
+#             return JsonResponse({'error': 'Invalid source or target language code'}, status=400)
+
+#         # Fetch the latest audio file from the 'records' directory in media
+#         records_directory = os.path.join(settings.MEDIA_ROOT, 'records')
+#         latest_audio_file = get_latest_audio_file(records_directory)
+
+#         if not latest_audio_file:
+#             return JsonResponse({'error': 'No audio file found in records directory'}, status=400)
+
+#         # Transcribe the audio and extract the text
+#         transcription_response = transcribe_audio(latest_audio_file)
+
+#         # Check if the transcription response is in the expected format
+#         if 'text' in transcription_response:
+#             transcription = transcription_response['text']
+#         else:
+#             return JsonResponse({'error': 'Invalid transcription format'}, status=400)
+
+#         # Translate the transcribed text
+#         translation = translate_text(transcription, source_language_code, target_language_code)
+
+#         # Load the 'record_detail.html' template with the appropriate context
+#         template = loader.get_template('record_detail.html')
+#         context = {
+#             'source_language_code': source_language_code,
+#             'target_language_code': target_language_code,
+#             'transcription': transcription,
+#             'translation': translation,
+#             'LANGUAGES': LANGUAGES,
+#         }
+#         rendered_content = template.render(context)
+
+#         # Return the rendered content as an HTML response
+#         return HttpResponse(rendered_content)
+
+#     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 def get_latest_audio_file(directory):

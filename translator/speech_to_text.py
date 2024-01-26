@@ -10,43 +10,46 @@ import pyttsx3
 import keyboard
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
 
-# Define global variables for the model and huggingface api token
+openai.api_key = ('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')
 
-api_token = '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'
-model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token)
 
-def translate_text(text, source_language_code, target_language_code):
-    # Load the Hugging Face tokenizer
-    tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token, src_lang=source_language_code)
+# # Define global variables for the model and huggingface api token
 
-    # Prepare the input text for translation
-    inputs = tokenizer(text, return_tensors="pt")
+# api_token = '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'
+# model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token)
 
-    # Translate the text to the desired language
-    translated_tokens = model.generate(
-         **inputs, forced_bos_token_id=tokenizer.lang_code_to_id[target_language_code], max_length=30
-    )
+# def translate_text(text, source_language_code, target_language_code):
+#     # Load the Hugging Face tokenizer
+#     tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-600M", use_auth_token=api_token, src_lang=source_language_code)
 
-    # Decode the translated tokens into text
-    translation = tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)[0]
+#     # Prepare the input text for translation
+#     inputs = tokenizer(text, return_tensors="pt")
 
-    return translation
+#     # Translate the text to the desired language
+#     translated_tokens = model.generate(
+#          **inputs, forced_bos_token_id=tokenizer.lang_code_to_id[target_language_code], max_length=30
+#     )
 
-# def transcribe_audio(filename):
-#     audio_file= open(filename, "rb")
-#     transcript = openai.Audio.transcribe("whisper-1", audio_file)
-#     audio_file.close()
-#     return transcript
+#     # Decode the translated tokens into text
+#     translation = tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)[0]
+
+#     return translation
 
 def transcribe_audio(filename):
-    transcriber = pipeline(model="openai/whisper-large")
-    result = transcriber(filename)
+    audio_file= open(filename, "rb")
+    transcript = openai.Audio.transcribe("whisper-1", audio_file)
+    audio_file.close()
+    return transcript
 
-    if result and 'text' in result[0]:
-        transcription = result[0]['text']
-        return transcription
-    else:
-        return "Transcription not available."
+# def transcribe_audio(filename):
+#     transcriber = pipeline(model="openai/whisper-large")
+#     result = transcriber(filename)
+
+#     if result and 'text' in result[0]:
+#         transcription = result[0]['text']
+#         return transcription
+#     else:
+#         return "Transcription not available."
 
 
 def say(text):
