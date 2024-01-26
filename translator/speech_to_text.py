@@ -1,4 +1,5 @@
 import openai
+import os
 #import sounddevice as sd
 import audiofile as af
 from scipy.io.wavfile import write
@@ -10,7 +11,7 @@ import pyttsx3
 import keyboard
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
 
-openai.api_key = ('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')
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 # # Define global variables for the model and huggingface api token
