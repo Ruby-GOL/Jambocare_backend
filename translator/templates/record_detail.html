@@ -32,14 +32,14 @@
     <div class="container">
       <div class="columns">
         <div class="column is-offset-4 is-4">
-          <h1 class="title">Translate</h1>
+          <h1 class="title">Speech Translatation </h1>
           <div class="card">
             <div class="card-content">
-              <h1 class="text-center">Choose languages</h1>
-              <div class="row">
+              {% comment %} <h1 class="text-center">Choose languages</h1> {% endcomment %}
+              {% comment %} <div class="row">
                 <div class="col-md-6 offset-md-3">
                  <!-- Add this form for translation -->
-                    <form method="post" action="{% url 'translate_audio' %}">
+                     <form method="post" action="{% url 'translate_audio' %}">
                         {% csrf_token %}
                         <div class="form-group">
                         <label for="source_language_code">Translate from:</label>
@@ -58,9 +58,9 @@
                         </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Translate </button>
-                    </form>   
+                    </form> 
                 </div>
-              </div>
+              </div> {% endcomment %}
               <div class="row mt-4">
                 <div class="col-md-6 offset-md-3">
                   {% if transcription %}
