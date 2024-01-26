@@ -10,7 +10,7 @@ import pyttsx3
 import keyboard
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
 
-openai.api_key = ('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')
+openai.api_key = ('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')
 
 
 # # Define global variables for the model and huggingface api token
@@ -67,13 +67,7 @@ def save_text_as_audio(text, audio_filename):
     myobj = gTTS(text=text, lang='en', slow=False)  
     myobj.save(audio_filename)
 	
-# def translate_text(text, target_language_code):
-#     translation = openai.Translation.translate(
-#         api_key=openai.api_key,
-#         text=text,
-#         target_language=target_language_code
-#     )
-#     return translation
+
 
 # def play_audio(filename):
 #     with audioread.audio_open(filename) as f:
