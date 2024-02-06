@@ -91,9 +91,7 @@ def translate_audio(request):
             'source_language_code': source_language_code,
             'target_language_code': target_language_code
         }
-        print(payload)
         translation_response = requests.post(api_endpoint, json=payload)
-        print(translation_response.text)
         # Check if the translation request was successful
         if translation_response.status_code == 200:
             translation = translation_response.json().get('translation', '')
