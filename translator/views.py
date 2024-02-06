@@ -27,6 +27,8 @@ LANGUAGES = [
     ("fra_Latn", "French"),
     ("eng_Latn", "English"),
     ("deu_Latn", "German"),
+    ("spa_Latn", "Spanish"),
+    ("hin_Deva", "Hindi"),
 ]
 
 def record(request):
