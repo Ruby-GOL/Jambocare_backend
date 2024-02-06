@@ -17,3 +17,26 @@
 #     target_language_code = data.get('target_language_code', '')
 
 #     inputs = tokenizer(text, return_tensors="pt")
+
+
+
+# attrs==21.2.0
+# Automat==20.2.0
+# Babel==2.8.0
+# bcrypt==3.2.0
+# blinker==1.7.0
+# certifi==2020.6.20
+# chardet==4.0.0
+# click==8.1.7
+# cloud-init==23.3.3
+# colorama==0.4.4
+# command-not-found==0.3
+# configobj==5.0.6
+# constantly==15.1.0
+# cryptography==3.4.8
+# dbus-python==1.2.18
+# distlib==0.3.8
+# distro==1.7.0
+# distro-info==1.1+ubuntu0.2
+# filelock==3.13.1
+# Flask==3.0.1
